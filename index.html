@@ -41,7 +41,6 @@
       overflow-x: hidden;
     }
 
-    /* アプリ枠（スマホ〜タブレットサイズ意識） */
     #app-container {
       width: 100%;
       max-width: 480px;
@@ -51,10 +50,9 @@
       flex-direction: column;
       position: relative;
       box-shadow: 0 0 20px rgba(0,0,0,0.05);
-      padding-bottom: 70px; /* タブバーの高さ確保 */
+      padding-bottom: 70px;
     }
 
-    /* ヘッダー */
     header {
       padding: 20px 20px 10px;
       background: var(--bg-color);
@@ -72,7 +70,6 @@
       gap: 8px;
     }
 
-    /* タブコンテンツ領域 */
     .tab-content {
       display: none;
       padding: 0 20px 20px;
@@ -83,7 +80,6 @@
       display: block;
     }
 
-    /* サイバーパンク風 労力メーター */
     .effort-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -132,7 +128,6 @@
       color: #fff;
     }
 
-    /* フィルタータブ */
     .filter-group {
       display: flex;
       gap: 8px;
@@ -162,7 +157,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    /* 目標カード */
     .goal-list {
       display: flex;
       flex-direction: column;
@@ -211,7 +205,6 @@
       color: #d97706;
     }
 
-    /* ステップ一覧 */
     .step-list {
       display: flex;
       flex-direction: column;
@@ -232,7 +225,6 @@
       color: var(--text-sub);
     }
 
-    /* 新規作成ボタン */
     .add-goal-btn {
       width: 100%;
       padding: 12px;
@@ -250,7 +242,6 @@
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
 
-    /* フォーム modal風 */
     .form-container {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -310,7 +301,6 @@
       color: var(--danger);
     }
 
-    /* ボトムナビゲーション */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -344,7 +334,6 @@
       font-weight: 700;
     }
 
-    /* --- シャッター演出（サイバー・重厚アニメーション） --- */
     #shutter-overlay {
       position: fixed;
       top: 0;
@@ -382,7 +371,6 @@
       border-top: 4px solid var(--primary);
     }
 
-    /* シャッターが閉じている状態 */
     #shutter-overlay.closed {
       pointer-events: auto;
     }
@@ -417,7 +405,6 @@
       margin-bottom: 10px;
     }
 
-    /* データ管理画面スタイル */
     .data-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -446,17 +433,13 @@
       <h1><i data-lucide="target" style="color:var(--primary)"></i> 目標くん 2.0</h1>
     </header>
 
-    <!-- ホームタブ -->
     <div id="tab-home" class="tab-content active">
-      
-      <!-- 投入労力カウンター -->
       <div class="effort-card">
         <div class="effort-title">今週の使用可能 投入労力</div>
         <div class="effort-value" id="effort-display">00</div>
         <button class="effort-btn" onclick="promptSetEffort()">週の目標労力を設定</button>
       </div>
 
-      <!-- 目標追加ボタン & フォーム -->
       <button class="add-goal-btn" onclick="toggleGoalForm()">
         <i data-lucide="plus-circle"></i> 新しい目標を作成
       </button>
@@ -476,7 +459,6 @@
           <input type="number" id="form-effort" class="form-control" value="1" min="1">
         </div>
         
-        <!-- ステップ追加 -->
         <div class="form-group">
           <label>実行ステップ (タスク分解)</label>
           <div id="step-inputs"></div>
@@ -489,20 +471,15 @@
         </div>
       </div>
 
-      <!-- フィルター -->
       <div class="filter-group">
         <button class="filter-btn active" onclick="setFilter('all', this)">すべて</button>
         <button class="filter-btn" onclick="setFilter('active', this)">実行中</button>
         <button class="filter-btn" onclick="setFilter('completed', this)">実行済み</button>
       </div>
 
-      <!-- 目標リスト -->
-      <div class="goal-list" id="goal-list-container">
-        <!-- JSで動的生成 -->
-      </div>
+      <div class="goal-list" id="goal-list-container"></div>
     </div>
 
-    <!-- データ管理タブ -->
     <div id="tab-data" class="tab-content">
       <div class="data-card">
         <h3 style="font-size: 1rem; margin-bottom: 8px;">データのバックアップと復元</h3>
@@ -519,7 +496,6 @@
       </div>
     </div>
 
-    <!-- ボトムナビゲーション -->
     <nav class="bottom-nav">
       <button class="nav-item active" onclick="switchTab('home', this)">
         <i data-lucide="home"></i>
@@ -532,7 +508,6 @@
     </nav>
   </div>
 
-  <!-- シャッターオーバーレイ -->
   <div id="shutter-overlay">
     <div class="shutter-plate shutter-top">
       <div class="shutter-msg">
@@ -549,27 +524,22 @@
   </div>
 
   <script>
-    // --- アプリ状態管理 ---
     let state = {
-      effort: 10, // 今週の使用可能労力
+      effort: 10,
       lastResetDate: new Date().toDateString(),
       goals: [],
       filter: 'all'
     };
 
-    // 初期化
     window.addEventListener('DOMContentLoaded', () => {
       loadData();
       checkDailyReset();
       requestNotificationPermission();
       render();
       lucide.createIcons();
-
-      // 起動時シャッターアニメーション演出
       triggerStartupShutter();
     });
 
-    // --- ローカルストレージ操作 ---
     function saveData() {
       localStorage.setItem('target_kun_data', JSON.stringify(state));
     }
@@ -581,23 +551,18 @@
       }
     }
 
-    // --- 日付またぎリセットチェック（毎日自動回復） ---
     function checkDailyReset() {
       const today = new Date().toDateString();
       if (state.lastResetDate !== today) {
-        // 日付が変わったら労力を少し回復（例: デフォルト値にリセット）
-        state.effort = Math.max(state.effort, 5); // 最低5回復
+        state.effort = Math.max(state.effort, 5);
         state.lastResetDate = today;
         saveData();
       }
     }
 
-    // --- 起動時シャッターアニメーション ---
     function triggerStartupShutter() {
       const shutter = document.getElementById('shutter-overlay');
-      // 一旦閉じた状態にしてから開く
       shutter.classList.add('closed');
-      
       setTimeout(() => {
         if (state.effort > 0) {
           shutter.classList.remove('closed');
@@ -605,13 +570,10 @@
       }, 600);
     }
 
-    // --- UI描画処理 ---
     function render() {
-      // 労力カウンター（サイバーフォント）
       const effortDisplay = document.getElementById('effort-display');
       effortDisplay.textContent = String(state.effort).padStart(2, '0');
 
-      // 労力判定によるシャッター処理
       const shutter = document.getElementById('shutter-overlay');
       if (state.effort <= 0) {
         shutter.classList.add('closed');
@@ -619,7 +581,6 @@
         shutter.classList.remove('closed');
       }
 
-      // 目標リスト描画
       const container = document.getElementById('goal-list-container');
       container.innerHTML = '';
 
@@ -637,8 +598,6 @@
       filteredGoals.forEach((goal) => {
         const card = document.createElement('div');
         card.className = 'goal-card';
-        
-        const isCompleted = goal.completed ? 'completed' : '';
         
         card.innerHTML = `
           <div class="goal-header">
@@ -667,7 +626,6 @@
       lucide.createIcons();
     }
 
-    // --- 労力消費 & チェック操作 ---
     function toggleStep(goalId, stepIdx) {
       const goal = state.goals.find(g => g.id === goalId);
       if (!goal) return;
@@ -675,20 +633,17 @@
       const step = goal.steps[stepIdx];
       step.done = !step.done;
 
-      // ステップ進行時の労力消費ロジック
       if (step.done && state.effort > 0) {
-        state.effort = Math.max(0, state.effort - 1); // 1消費
+        state.effort = Math.max(0, state.effort - 1);
         checkNotification();
       }
 
-      // 全ステップ完了チェック
       goal.completed = goal.steps.length > 0 && goal.steps.every(s => s.done);
 
       saveData();
       render();
     }
 
-    // --- 週の労力手動設定 ---
     function promptSetEffort() {
       const val = prompt("今週の使用可能 投入労力を設定してください:", state.effort);
       if (val !== null && !isNaN(val)) {
@@ -698,13 +653,12 @@
       }
     }
 
-    // --- 目標作成フォーム制御 ---
     function toggleGoalForm() {
       const form = document.getElementById('goal-form');
       form.classList.toggle('active');
       if (form.classList.contains('active')) {
         document.getElementById('step-inputs').innerHTML = '';
-        addStepInput(); // 初期1個
+        addStepInput();
       }
     }
 
@@ -750,4 +704,38 @@
       saveData();
       render();
 
+      document.getElementById('form-name').value = '';
+      toggleGoalForm();
+    }
+
+    function deleteGoal(id) {
+      if (confirm('この目標を削除しますか？')) {
+        state.goals = state.goals.filter(g => g.id !== id);
+        saveData();
+        render();
+      }
+    }
+
+    function setFilter(filterType, btn) {
+      state.filter = filterType;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    }
+
+    function switchTab(tabName, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function requestNotificationPermission() {
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    }
+
+    function checkNotification() {
+      if (state.effort <= 2 && state.effort > 0 && Notification.per
