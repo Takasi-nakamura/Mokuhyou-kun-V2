@@ -1,521 +1,743 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Smart Life Device</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#ffffff;
-  --surface:#f6f7f9;
-  --surface-2:#eef0f3;
-  --line:#e6e8eb;
-  --text:#16181d;
-  --text-2:#6b7280;
-  --text-3:#9aa1ab;
-  --accent:#2f5fed;
-  --accent-soft:#e8edff;
-  --danger:#dc2626;
-  --danger-soft:#fdeaea;
-  --warn:#d97a1f;
-  --warn-soft:#fdf1e3;
-  --ok:#18a558;
-  --radius-lg:28px;
-  --radius-md:18px;
-  --radius-sm:12px;
-  --shadow:0 1px 2px rgba(20,20,30,.04), 0 8px 24px rgba(20,20,30,.05);
-  --font-num:'Space Grotesk',system-ui,sans-serif;
-  --font-body:'Noto Sans JP',system-ui,sans-serif;
-  color-scheme: light;
-}
-:root[data-theme="dark"]{
-  --bg:#0e1013;
-  --surface:#181b20;
-  --surface-2:#20242b;
-  --line:#2a2f37;
-  --text:#f2f3f5;
-  --text-2:#9ba3ad;
-  --text-3:#6b7280;
-  --accent:#5b84ff;
-  --accent-soft:#1c2540;
-  --danger:#ff6b6b;
-  --danger-soft:#3a1e20;
-  --warn:#eab35f;
-  --warn-soft:#3a2c15;
-  --ok:#3ecf8e;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-  color-scheme: dark;
-}
-:root[data-numfont="rounded"]{ --font-num:'Zen Maru Gothic',system-ui,sans-serif; }
-:root[data-numfont="mincho"]{ --font-num:'Shippori Mincho',serif; }
-:root[data-numfont="digital"]{ --font-num:'Space Grotesk',monospace; letter-spacing:2px; }
-:root[data-bodyfont="rounded"]{ --font-body:'Zen Maru Gothic',system-ui,sans-serif; }
-:root[data-bodyfont="mincho"]{ --font-body:'Shippori Mincho',serif; }
+<！DOCTYPE HTML>
+<HTML ラン=「ジャ」>
+<頭>
+  <メタ 文字セット=「UTF-8」>
+  <メタ 名前=「ビューポート」 コンテンツ=「幅=デバイス幅、初期スケール=1。0」>
+  <タイトル>目標くん 2。0</タイトル>
+  <！-- オービトロン（Orbitron）& ルーシドン（Lucide）のルシド -->
+  <リンク 相対=「スタイルシート」 href=「https://fonts。googleapis。com/css2？family=Orbitron:wght@700;900&family=Noto+Sans+JP:wght@400;500;700」&表示=スワップ">
+  <スクリプト src=「https://unpkg。com/lucide@latest"」></スクリプト>
+  
+  <スタイル>
+    :根 {
+      --bg-color: #f8fafc;
+      --カードbg: #ffffff;
+      --テキストメイン: #0f172a;
+      --テキストサブ: #64748b;
+      ーープライマリ: #2563eb;
+      ーープライマリホバー: #1d4ed8;
+      --国境: #e2e8f0;
+      --危険: #ef4444;
+      ーー成功: #10b981;
+      --サイバーネオン: #00f0ff;
+    }
 
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;height:100%;}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--font-body);
-  overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-  transition:background .3s ease, color .3s ease;
-}
-button{font-family:inherit;}
-#app{
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-  height:100dvh;
-  padding:20px 28px 16px;
-  position:relative;
-}
+    * {
+      ボックスサイズ: ボーダーボックス;
+      マージン: 0;
+      パディング: 0;
+      フォントファミリー: ‘Noto Sans JP’, サンセリフ;
+      -ウェブキットタップハイライトカラー: 透明;
+    }
 
-/* ---------- Top bar ---------- */
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  min-height:36px;
-}
-.brand{
-  font-size:13px;
-  font-weight:500;
-  color:var(--text-3);
-  letter-spacing:.08em;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);}
-.icon-btn{
-  width:40px;height:40px;border-radius:50%;
-  border:1px solid var(--line);
-  background:var(--surface);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text-2);
-  transition:transform .15s ease, background .15s ease, color .15s ease;
-}
-.icon-btn:hover{background:var(--surface-2); color:var(--text);}
-.icon-btn:active{transform:scale(.92);}
-.icon-btn svg{width:19px;height:19px;}
+    体 {
+      背景色: var(--bg-color);
+      色: var(--テキストメイン);
+      表示: フレックス;
+      正当化するコンテンツ: センター;
+      最小高さ: 100vh;
+    }
 
-/* ---------- Clock ---------- */
-.clock-zone{
-  flex:0 0 auto;
-  text-align:center;
-  padding:10px 0 6px;
-}
-.clock{
-  font-family:var(--font-num);
-  font-weight:600;
-  font-size:clamp(64px,13vw,132px);
-  line-height:1;
-  letter-spacing:1px;
-  font-variant-numeric:tabular-nums;
-  color:var(--text);
-}
-.clock .colon{transition:opacity .15s;}
-.clock .sec{
-  font-size:.42em;
-  color:var(--text-3);
-  font-weight:500;
-  vertical-align:baseline;
-  margin-left:.15em;
-}
-.datetime{
-  margin-top:6px;
-  font-size:clamp(14px,2vw,18px);
-  color:var(--text-2);
-  font-weight:500;
-  letter-spacing:.02em;
-}
+    .アプリコンテナ {
+      幅: 100%;
+      最大幅: 480px;
+      背景: var(--カードbg);
+      最小高さ: 100vh;
+      表示: フレックス;
+      フレックス方向: 列;
+      位置: 相対的;
+      ボックスシャドウ: 0 0 20px rgba(0,0,0,0。05);
+      パディングボトム: 70px;
+      オーバーフローx: 隠れた;
+    }
 
-/* ---------- Alert banner ---------- */
-.alert-banner{
-  position:absolute;
-  top:-140px;left:24px;right:24px;
-  background:var(--danger);
-  color:#fff;
-  border-radius:var(--radius-md);
-  padding:14px 18px;
-  display:flex;align-items:center;gap:12px;
-  box-shadow:var(--shadow);
-  z-index:50;
-  transition:top .45s cubic-bezier(.2,.9,.3,1.3);
-  cursor:pointer;
-}
-.alert-banner.show{top:14px;}
-.alert-banner .a-icon{flex:0 0 auto;font-size:20px;}
-.alert-banner .a-text{flex:1;font-size:14px;font-weight:600;line-height:1.4;}
-.alert-banner .a-close{opacity:.85;font-size:13px;}
+    /* オオ */
+    ヘッダー {
+      パディング: 16px 20px;
+      ボーダーボトム: 1px 固体 var(--国境);
+      表示: フレックス;
+      正当化するコンテンツ: 空間間;
+      アイテムを整列させる: センター;
+      背景: #fff;
+      位置: 粘着性;
+      トップ: 0;
+      zインデックス: 10;
+    }
 
-/* ---------- Cards row ---------- */
-.cards-row{
-  flex:1 1 auto;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-  min-height:0;
-  margin-top:8px;
-}
-.card{
-  background:var(--surface);
-  border-radius:var(--radius-lg);
-  border:1px solid var(--line);
-  padding:20px 22px;
-  display:flex;
-  flex-direction:column;
-  cursor:pointer;
-  transition:background .15s ease, transform .15s ease;
-  min-height:0;
-  overflow:hidden;
-}
-.card:hover{background:var(--surface-2);}
-.card:active{transform:scale(.995);}
-.card-head{
-  display:flex;align-items:center;justify-content:space-between;
-  color:var(--text-3);font-size:12px;font-weight:600;letter-spacing:.08em;
-  margin-bottom:auto;
-}
-.card-head .exp{font-size:11px;color:var(--text-3);}
+    ヘッダー h1 {
+      フォントサイズ: 1。2レム;
+      フォントの太さ: 700;
+      文字間隔: -0。5px;
+    }
 
-/* weather card */
-.wx-main{display:flex;align-items:center;gap:16px;margin-top:8px;}
-.wx-icon{font-size:42px;line-height:1;}
-.wx-temp{font-family:var(--font-num);font-size:34px;font-weight:600;}
-.wx-sub{font-size:13px;color:var(--text-2);margin-top:2px;}
-.wx-area{font-size:13px;color:var(--text-2);margin-top:10px;}
+    /* みょしゃくちょう */
+    .コンテンツを表示 {
+      表示: なし;
+      パディング: 20px;
+    }
+    .コンテンツを表示.アクティブ {
+      表示: ブロック;
+    }
 
-/* news card */
-.news-list{margin-top:8px;display:flex;flex-direction:column;gap:10px;}
-.news-item{font-size:14.5px;line-height:1.5;font-weight:500;}
-.news-item .src{display:block;font-size:11px;color:var(--text-3);font-weight:500;margin-top:2px;}
+    /* サワガァガァ 労力表被ガァガァ */
+    .努力カード {
+      背景: #090d16;
+      色: #fff;
+      境界半径: 16px;
+      パディング: 24px 20px;
+      テキスト配置: センター;
+      マージンボトム: 24px;
+      位置: 相対的;
+      オーバーフロー: 隠れた;
+      ボックスシャドウ: 0 10px 25px rgba(0, 240, 255, 0。15);
+      国境: 1px 固体 rgba(0, 240, 255, 0。2);
+    }
 
-/* ---------- Bottom controls ---------- */
-.controls{
-  flex:0 0 auto;
-  display:flex;
-  gap:12px;
-  margin-top:16px;
-}
-.ctrl-btn{
-  flex:1;
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:var(--radius-md);
-  padding:14px 10px;
-  color:var(--text-2);
-  font-size:13px;font-weight:600;
-  cursor:pointer;
-  transition:background .15s ease,color .15s ease,border-color .15s ease;
-}
-.ctrl-btn svg{width:18px;height:18px;}
-.ctrl-btn:hover{background:var(--surface-2);}
-.ctrl-btn.active{
-  background:var(--accent-soft);
-  color:var(--accent);
-  border-color:transparent;
-}
+    .努力タイトル {
+      フォントサイズ: 0。85レム;
+      色: #94a3b8;
+      マージンボトム: 8px;
+      文字間隔: 0。5px;
+    }
 
-/* ---------- Overlay / Modal ---------- */
-.overlay{
-  position:fixed;inset:0;
-  background:rgba(10,12,16,.42);
-  backdrop-filter:blur(3px);
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;
-  transition:opacity .2s ease;
-  z-index:100;
-  padding:20px;
-}
-.overlay.show{opacity:1;pointer-events:auto;}
-.sheet{
-  background:var(--bg);
-  border-radius:24px;
-  width:100%;max-width:460px;
-  max-height:86vh;
-  overflow-y:auto;
-  box-shadow:0 20px 60px rgba(0,0,0,.25);
-  transform:translateY(16px) scale(.98);
-  transition:transform .22s cubic-bezier(.2,.9,.3,1.1);
-  border:1px solid var(--line);
-}
-.overlay.show .sheet{transform:translateY(0) scale(1);}
-.sheet-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 20px 8px;
-  position:sticky;top:0;background:var(--bg);
-}
-.sheet-title{font-size:16px;font-weight:700;}
-.sheet-body{padding:6px 20px 24px;}
-.close-x{
-  width:32px;height:32px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--surface);color:var(--text-2);cursor:pointer;border:none;
-}
+    .サイバー番号 {
+      フォントファミリー: ‘オービトロン’, サンセリフ;
+      フォントサイズ: 3。5レム;
+      フォントの太さ: 900;
+      色: var(--サイバーネオン);
+      テキストシャドウ: 0 0 12px rgba(0, 240, 255, 0。6);
+      line-height: 1;
+      margin: 10px 0;
+    }
 
-/* settings groups */
-.grp{margin-bottom:22px;}
-.grp-title{font-size:12px;font-weight:700;color:var(--text-3);letter-spacing:.08em;margin-bottom:10px;}
-.row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:11px 0;border-bottom:1px solid var(--line);
-  gap:14px;
-}
-.row:last-child{border-bottom:none;}
-.row-label{font-size:14px;font-weight:500;}
-.row-sub{font-size:12px;color:var(--text-3);margin-top:2px;}
-.seg{display:flex;background:var(--surface);border-radius:10px;padding:3px;gap:2px;}
-.seg button{
-  border:none;background:transparent;color:var(--text-2);
-  font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;
-}
-.seg button.on{background:var(--bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
-select{
-  border:1px solid var(--line);background:var(--surface);color:var(--text);
-  border-radius:9px;padding:8px 10px;font-size:13px;font-family:inherit;
-}
-.switch{
-  width:44px;height:26px;border-radius:20px;background:var(--surface-2);
-  position:relative;cursor:pointer;flex:0 0 auto;border:1px solid var(--line);
-  transition:background .15s;
-}
-.switch.on{background:var(--accent);border-color:var(--accent);}
-.switch .knob{
-  position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
-  background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);
-}
-.switch.on .knob{left:20px;}
+    .effort-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
 
-/* timer / stopwatch panel */
-.big-num{
-  font-family:var(--font-num);font-size:58px;font-weight:600;text-align:center;
-  padding:20px 0 6px;font-variant-numeric:tabular-nums;
-}
-.wheel-row{display:flex;justify-content:center;gap:6px;align-items:center;margin-bottom:10px;}
-.wheel-row input{
-  width:64px;text-align:center;font-family:var(--font-num);font-size:28px;
-  border:none;background:var(--surface);border-radius:10px;padding:8px 0;color:var(--text);
-}
-.tool-btns{display:flex;gap:10px;justify-content:center;margin-top:14px;}
-.tool-btns button{
-  flex:1;max-width:130px;padding:13px;border-radius:14px;border:none;
-  font-size:14px;font-weight:700;cursor:pointer;
-}
-.btn-primary{background:var(--accent);color:#fff;}
-.btn-ghost{background:var(--surface);color:var(--text);}
-.laps{margin-top:16px;max-height:160px;overflow-y:auto;}
-.lap-row{display:flex;justify-content:space-between;padding:8px 4px;border-bottom:1px solid var(--line);font-size:13px;font-family:var(--font-num);}
+    .btn-cyber {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-cyber:hover {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyber-neon);
+    }
 
-.small-note{font-size:12px;color:var(--text-3);line-height:1.6;margin-top:4px;}
+    /* モード切り替え・フィルター */
+    .filter-tabs {
+      display: flex;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
 
-/* toast for manner mode etc */
-.toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--text);color:var(--bg);padding:10px 18px;border-radius:99px;
-  font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s ease;z-index:200;
-}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    .filter-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-sub);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-@media (max-width:520px){
-  .cards-row{grid-template-columns:1fr;}
-  .controls{flex-wrap:wrap;}
-}
-</style>
+    .filter-btn.active {
+      background: #fff;
+      color: var(--text-main);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* フォーム関係 */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="number"], input[type="date"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    /* 動的リスト（ステップ・投入労力） */
+    .dynamic-list-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .btn-icon-danger {
+      background: #fee2e2;
+      color: var(--danger);
+      border: none;
+      width: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 目標カード */
+    .goal-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .goal-title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .goal-meta {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-list {
+      list-style: none;
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      padding: 4px 0;
+    }
+
+    .step-item.completed {
+      text-decoration: line-through;
+      color: var(--text-sub);
+    }
+
+    /* 下部固定ナビゲーション */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      height: 65px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 50%;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    /* シャッターギミック (全画面アニメーション) */
+    .shutter-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .shutter-leaf {
+      width: 100%;
+      height: 50%;
+      background: #0f172a;
+      transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .shutter-top {
+      transform: translateY(-100%);
+      border-bottom: 2px solid var(--cyber-neon);
+    }
+
+    .shutter-bottom {
+      transform: translateY(100%);
+      border-top: 2px solid var(--cyber-neon);
+    }
+
+    /* シャッターが閉じている時の状態 */
+    .shutter-closed .shutter-top {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .shutter-closed .shutter-bottom {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .shutter-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      text-align: center;
+      z-index: 101;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.4s;
+      pointer-events: none;
+      width: 80%;
+    }
+
+    .shutter-closed .shutter-message {
+      opacity: 1;
+    }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .badge-progress { background: #e0f2fe; color: #0284c7; }
+    .badge-done { background: #d1fae5; color: #059669; }
+
+  </style>
 </head>
 <body>
-<div id="app">
 
-  <div class="alert-banner" id="alertBanner">
-    <div class="a-icon">⚠️</div>
-    <div class="a-text" id="alertText">警報情報</div>
-    <div class="a-close" onclick="dismissAlert(event)">閉じる</div>
+<div class="app-container">
+  <!-- シャッターアニメーション用要素 -->
+  <div class="shutter-overlay" id="shutterOverlay">
+    <div class="shutter-leaf shutter-top"></div>
+    <div class="shutter-leaf shutter-bottom"></div>
+    <div class="shutter-message" id="shutterMessage">
+      <i data-lucide="lock" size="48" style="color: var(--cyber-neon); margin-bottom: 12px;"></i>
+      <h2 style="font-family:'Orbitron'; font-size: 1.5rem; color: var(--cyber-neon);">CAPACITY EXHAUSTED</h2>
+      <p style="font-size: 0.85rem; margin-top: 8px; color: #94a3b8;">本日の投入労力を使い切りました。<br>明日（00:00）自動でリセット・回復します！</p>
+    </div>
   </div>
 
-  <div class="topbar">
-    <div class="brand"><span class="dot" id="mannerDot"></span><span id="brandLabel">Smart Life Device</span></div>
-    <button class="icon-btn" onclick="openSheet('settingsSheet')" aria-label="設定">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/><path d="M19.4 13.5c.04-.5.06-1 .06-1.5s-.02-1-.06-1.5l2.02-1.58a.5.5 0 00.12-.63l-1.92-3.32a.5.5 0 00-.6-.22l-2.38.96a7.5 7.5 0 00-1.3-.75l-.36-2.53a.5.5 0 00-.5-.43h-3.84a.5.5 0 00-.5.43l-.36 2.53c-.47.2-.9.45-1.3.75l-2.38-.96a.5.5 0 00-.6.22L2.62 8.3a.5.5 0 00.12.63L4.76 10.5c-.04.5-.06 1-.06 1.5s.02 1 .06 1.5l-2.02 1.58a.5.5 0 00-.12.63l1.92 3.32a.5.5 0 00.6.22l2.38-.96c.4.3.83.55 1.3.75l.36 2.53a.5.5 0 00.5.43h3.84a.5.5 0 00.5-.43l.36-2.53c.47-.2.9-.45 1.3-.75l2.38.96a.5.5 0 00.6-.22l1.92-3.32a.5.5 0 00-.12-.63L19.4 13.5z"/></svg>
+  <header>
+    <h1>目標くん 2.0</h1>
+    <button id="btnNotify" style="background:none; border:none; color:var(--text-sub); cursor:pointer;">
+      <i data-lucide="bell"></i>
     </button>
-  </div>
+  </header>
 
-  <div class="clock-zone">
-    <div class="clock" id="clockMain">--:--<span class="sec" id="clockSec">--</span></div>
-    <div class="datetime" id="dateLine">----年--月--日</div>
-  </div>
+  <!-- HOME VIEW -->
+  <main id="homeView" class="view-content active">
+    <!-- サイバーパンク労力表示 -->
+    <div class="effort-card">
+      <div class="effort-title">今週の使用可能な投入労力</div>
+      <div class="cyber-number" id="effortDisplay">00</div>
+      <div class="effort-controls">
+        <button class="btn-cyber" onclick="setWeeklyEffort()">毎週設定する</button>
+      </div>
+    </div>
 
-  <div class="cards-row">
-    <div class="card" onclick="openSheet('weatherSheet')">
-      <div class="card-head"><span>天気</span><span class="exp" id="wxAreaLabel">—</span></div>
-      <div class="wx-main">
-        <div class="wx-icon" id="wxIcon">🌤️</div>
-        <div>
-          <div class="wx-temp" id="wxTemp">--°</div>
-          <div class="wx-sub" id="wxDesc">読み込み中…</div>
+    <!-- フィルター切り替え -->
+    <div class="filter-tabs">
+      <button class="filter-btn active" onclick="filterGoals('active')">実行中</button>
+      <button class="filter-btn" onclick="filterGoals('completed')">実行済み</button>
+      <button class="filter-btn" onclick="filterGoals('all')">すべて</button>
+    </div>
+
+    <!-- 目標一覧 -->
+    <div id="goalsList"></div>
+
+    <hr style="border:none; border-top:1px solid var(--border); margin: 30px 0;">
+
+    <!-- 目標作成セクション -->
+    <h2 style="font-size: 1.1rem; margin-bottom: 16px;">新規目標の作成</h2>
+    <form id="goalForm">
+      <div class="form-group">
+        <label>目標の名前</label>
+        <input type="text" id="goalTitle" placeholder="例：Webサイトを公開する" required>
+      </div>
+
+      <div class="form-group">
+        <label>期間（作成日: <span id="currentDate"></span>）</label>
+        <input type="date" id="goalDeadline" required>
+      </div>
+
+      <!-- 投入労力（動的追加） -->
+      <div class="form-group">
+        <label>必要な投入労力（数値）</label>
+        <div id="effortInputList">
+          <div class="dynamic-list-item">
+            <input type="number" class="effort-input" placeholder="数値 (例: 5)" min="1" required>
+          </div>
         </div>
+        <button type="button" class="btn-cyber" style="color:var(--text-main); border-color:var(--border);" onclick="addEffortField()">+ 労力項目を追加</button>
       </div>
-      <div class="wx-area" id="wxDetail"></div>
+
+      <!-- ステップ（動的追加） -->
+      <div class="form-group">
+        <label>ステップ（タスク）</label>
+        <div id="stepInputList">
+          <div class="dynamic-list-item">
+            <input type="text" class="step-input" placeholder="例：ワイヤーフレームの作成" required>
+          </div>
+        </div>
+        <button type="button" class="btn-cyber" style="color:var(--text-main); border-color:var(--border);" onclick="addStepField()">+ ステップを追加</button>
+      </div>
+
+      <button type="submit" class="btn-primary" style="margin-top: 20px;">
+        <i data-lucide="plus-circle"></i> 目標を作成する
+      </button>
+    </form>
+  </main>
+
+  <!-- DATA MANAGEMENT VIEW -->
+  <main id="dataView" class="view-content">
+    <h2 style="font-size: 1.1rem; margin-bottom: 16px;">データ管理</h2>
+    
+    <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px;">
+      <h3 style="font-size:0.95rem; margin-bottom:8px;">データバックアップ</h3>
+      <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:12px;">ブラウザ（LocalStorage）に自動保存されています。バックアップ用に出力できます。</p>
+      <button class="btn-primary" onclick="exportData()" style="margin-bottom:8px; background:#475569;">データをエクスポート</button>
+      <input type="file" id="importFile" onchange="importData(event)" style="display:none;">
+      <button class="btn-primary" onclick="document.getElementById('importFile').click()" style="background:none; border:1px solid var(--border); color:var(--text-main);">インポート</button>
     </div>
 
-    <div class="card" onclick="openSheet('newsSheet')">
-      <div class="card-head"><span>ニュース</span><span class="exp">詳細 ›</span></div>
-      <div class="news-list" id="newsList">
-        <div class="news-item">読み込み中…</div>
-      </div>
+    <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px;">
+      <h3 style="font-size:0.95rem; margin-bottom:8px; color:var(--danger);">危険な操作</h3>
+      <button class="btn-primary" onclick="clearData()" style="background:var(--danger);">全データを初期化</button>
     </div>
-  </div>
+  </main>
 
-  <div class="controls">
-    <button class="ctrl-btn" id="mannerBtn" onclick="toggleManner()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 8a5 5 0 010 8"/></svg>
-      <span id="mannerLabel">マナーモード</span>
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="navHome" onclick="switchTab('home')">
+      <i data-lucide="home"></i>
+      ホーム
     </button>
-    <button class="ctrl-btn" onclick="openSheet('timerSheet')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
-      <span>タイマー</span>
+    <button class="nav-item" id="navData" onclick="switchTab('data')">
+      <i data-lucide="database"></i>
+      データ管理
     </button>
-    <button class="ctrl-btn" onclick="openSheet('stopwatchSheet')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M10 2h4M18.5 5.5l1-1"/></svg>
-      <span>ストップウォッチ</span>
-    </button>
-  </div>
+  </nav>
 </div>
 
-<!-- ================= SETTINGS SHEET ================= -->
-<div class="overlay" id="settingsSheet" onclick="if(event.target===this)closeSheet('settingsSheet')">
-<div class="sheet">
-  <div class="sheet-head"><div class="sheet-title">設定</div><button class="close-x" onclick="closeSheet('settingsSheet')">✕</button></div>
-  <div class="sheet-body">
+<script>
+  // App State
+  let store = {
+    weeklyEffort: 0,
+    lastResetDate: new Date().toDateString(),
+    goals: []
+  };
 
-    <div class="grp">
-      <div class="grp-title">デザイン</div>
-      <div class="row"><div class="row-label">テーマ</div>
-        <div class="seg" id="segTheme">
-          <button data-v="light">ライト</button><button data-v="dark">ダーク</button><button data-v="system">端末</button>
-        </div>
-      </div>
-      <div class="row"><div class="row-label">数字フォント<div class="row-sub">時計・タイマーなどの数字</div></div>
-        <div class="seg" id="segNumFont">
-          <button data-v="standard">標準</button><button data-v="rounded">丸文字</button><button data-v="mincho">明朝</button><button data-v="digital">デジタル</button>
-        </div>
-      </div>
-      <div class="row"><div class="row-label">通常フォント</div>
-        <div class="seg" id="segBodyFont">
-          <button data-v="standard">ゴシック</button><button data-v="rounded">丸ゴシック</button><button data-v="mincho">明朝</button>
-        </div>
-      </div>
-    </div>
+  let currentFilter = 'active';
 
-    <div class="grp">
-      <div class="grp-title">API・地域設定</div>
-      <div class="row"><div class="row-label">天気・警報の地域<div class="row-sub">気象庁APIの地域コードを使用</div></div>
-        <select id="areaSelect"></select>
-      </div>
-      <div class="row"><div class="row-label">ニュース取得<div class="row-sub">NHKニュースRSS（APIキー不要）</div></div>
-        <div class="switch" id="swNews" onclick="toggleSwitch(this,'newsEnabled')"><div class="knob"></div></div>
-      </div>
-      <div class="small-note">天気予報・警報はすべて気象庁の公開JSON（無料・APIキー不要）から取得しています。</div>
-    </div>
+  // --- 初期化 ---
+  window.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    checkDailyReset();
+    runShutterAnimation(true); // 起動時アニメーション
+    
+    // 日付設定
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+    
+    render();
+    lucide.createIcons();
 
-    <div class="grp">
-      <div class="grp-title">通知</div>
-      <div class="row"><div class="row-label">ポップアップ表示<div class="row-sub">警報発表時に画面上部へ表示</div></div>
-        <div class="switch" id="swPopup" onclick="toggleSwitch(this,'popupEnabled')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">通知音<div class="row-sub">マナーモード中は自動的に鳴りません</div></div>
-        <div class="switch" id="swSound" onclick="toggleSwitch(this,'soundEnabled')"><div class="knob"></div></div>
-      </div>
-    </div>
+    // 通知許可確認
+    document.getElementById('btnNotify').addEventListener('click', () => {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            alert('通知機能がONになりました！期限間近や労力更新時にお知らせします。');
+            sendNotification('目標くん 2.0', '通知が正しく有効化されました！');
+          }
+        });
+      }
+    });
+  });
 
-    <div class="grp">
-      <div class="grp-title">警報（気象庁API）</div>
-      <div class="row"><div class="row-label">気象警報・注意報を通知<div class="row-sub">大雨・洪水・暴風など全種類に対応</div></div>
-        <div class="switch" id="swWxAlert" onclick="toggleSwitch(this,'wxAlertEnabled')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">緊急地震速報・震度情報</div>
-        <div class="switch" id="swQuake" onclick="toggleSwitch(this,'quakeEnabled')"><div class="knob"></div></div>
-      </div>
-    </div>
+  // --- データのロード/保存 (LocalStorage) ---
+  function loadData() {
+    const saved = localStorage.getItem('mokuhyoukun_data');
+    if (saved) {
+      store = JSON.parse(saved);
+    }
+  }
 
-    <div class="grp">
-      <div class="grp-title">音声読み上げ（Web Speech API）</div>
-      <div class="row"><div class="row-label">読み上げ機能</div>
-        <div class="switch" id="swSpeechMaster" onclick="toggleSwitch(this,'speechMaster')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">警報発表時に読み上げ</div>
-        <div class="switch" id="swSpAlert" onclick="toggleSwitch(this,'speechAlert')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">地震情報を読み上げ</div>
-        <div class="switch" id="swSpQuake" onclick="toggleSwitch(this,'speechQuake')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">毎正時に時報を読み上げ</div>
-        <div class="switch" id="swSpHour" onclick="toggleSwitch(this,'speechHour')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">天気の変化を読み上げ</div>
-        <div class="switch" id="swSpWx" onclick="toggleSwitch(this,'speechWeather')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">ニュース見出しを読み上げ</div>
-        <div class="switch" id="swSpNews" onclick="toggleSwitch(this,'speechNews')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">タイマー終了を読み上げ</div>
-        <div class="switch" id="swSpTimer" onclick="toggleSwitch(this,'speechTimer')"><div class="knob"></div></div>
-      </div>
-      <div class="row"><div class="row-label">読み上げの声</div>
-        <select id="voiceSelect"></select>
-      </div>
-      <div class="row"><div class="row-label">速さ</div>
-        <input type="range" id="rateRange" min="0.6" max="1.6" step="0.1" style="width:140px">
-      </div>
-    </div>
+  function saveData() {
+    localStorage.setItem('mokuhyoukun_data', JSON.stringify(store));
+    render();
+  }
 
-    <div class="small-note">この設定はこの端末のブラウザ内にのみ保存されます。読み上げにはブラウザ標準のWeb Speech APIを使用しており、追加設定は不要です。</div>
-  </div>
-</div>
-</div>
+  // 日付が変わったら労力を回復させる（リセットチェック）
+  function checkDailyReset() {
+    const today = new Date().toDateString();
+    if (store.lastResetDate !== today) {
+      // 日付が更新された場合のリセット処理
+      store.lastResetDate = today;
+      // 必要に応じてここで自動回復ロジック（例：毎週決めた基準値に戻すなど）
+      saveData();
+    }
+  }
 
-<!-- ================= WEATHER SHEET ================= -->
-<div class="overlay" id="weatherSheet" onclick="if(event.target===this)closeSheet('weatherSheet')">
-<div class="sheet">
-  <div class="sheet-head"><div class="sheet-title">天気の詳細</div><button class="close-x" onclick="closeSheet('weatherSheet')">✕</button></div>
-  <div class="sheet-body" id="weatherDetailBody">読み込み中…</div>
-</div>
-</div>
+  // --- シャッター演出 ---
+  function runShutterAnimation(isOpen = true) {
+    const shutter = document.getElementById('shutterOverlay');
+    if (!isOpen) {
+      // 閉じる
+      shutter.classList.add('shutter-closed');
+    } else {
+      // 一度閉じ状態にしてから滑らかに開く（起動時）
+      shutter.classList.add('shutter-closed');
+      setTimeout(() => {
+        // 労力が0でなければ開く
+        if (store.weeklyEffort > 0) {
+          shutter.classList.remove('shutter-closed');
+        }
+      }, 300);
+    }
+  }
 
-<!-- ================= NEWS SHEET ================= -->
-<div class="overlay" id="newsSheet" onclick="if(event.target===this)closeSheet('newsSheet')">
-<div class="sheet">
-  <div class="sheet-head"><div class="sheet-title">最新ニュース</div><button class="close-x" onclick="closeSheet('newsSheet')">✕</button></div>
-  <div class="sheet-body" id="newsDetailBody">読み込み中…</div>
-</div>
-</div>
+  function checkEffortAndShutter() {
+    if (store.weeklyEffort <= 0) {
+      runShutterAnimation(false);
+    } else {
+      document.getElementById('shutterOverlay').classList.remove('shutter-closed');
+    }
+  }
 
-<!-- ================= TIMER SHEET ================= -->
-<div class="overlay" id="timerSheet" onclick="if(event.target===this)closeSheet('timerSheet')">
-<div class="sheet">
-  <div class="sheet-head"><div class="sheet-title">タイマー</div><button class="close-x" onclick="closeSheet('timerSheet')">✕</button></div>
-  <div class="sheet-body">
-    <div class="big-num" id="timerDisplay">00:00:00</div>
-    <div class="wheel-row" id="timerInputs">
-      <input type="number" id="tHour" min="0" max="23" value="0"><span>時</span>
-      <input type="number" id="tMin" min="0" max="59" value="5"><span>分</span>
-      <input type="number" id="tSec" min="0" max="59" value="0"><span>秒</span>
-    </div>
-    <div class="tool-btns">
-      <button class="btn-primary" id="timerStartBtn" onclick="timerStart()">開始</button>
-      <button class="btn-ghost" onclick="timerReset()">リセット</button>
-    </div>
-  </div>
-</div>
-</div>
+  // --- UI レンダリング ---
+  function render() {
+    // 労力表示
+    document.getElementById('effortDisplay').textContent = String(store.weeklyEffort).padStart(2, '0');
 
-<!-- ================= STOPWATCH SHEET ================= -->
-<div class="overlay" id="stopwatchSheet" onclick="if(event.target===this)closeSheet('stopwatchSheet')">
-<div class="sheet">
-  <div class="sheet-head"><div class="sheet-title">ストップウォッチ</div><button class="close-x" onclick="closeSheet('stopwatchSheet')">✕</button></div>
-  <div class="sheet-bod
+    // 目標一覧の描画
+    const goalsList = document.getElementById('goalsList');
+    goalsList.innerHTML = '';
+
+    const filtered = store.goals.filter(g => {
+      if (currentFilter === 'active') return !g.completed;
+      if (currentFilter === 'completed') return g.completed;
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      goalsList.innerHTML = `<p style="text-align:center; color:var(--text-sub); font-size:0.85rem; padding:20px 0;">該当する目標がありません</p>`;
+    } else {
+      フィルタリング.forEach((ゴール) => {
+        const カード = 文書.要素を作成する(「分割」);
+        カード.クラス名 = 「ゴールカード」;
+        
+        // 残期間計算
+        const 締め切り = 新しい 日付(ゴール.締め切り);
+        const 今日 = 新しい 日付();
+        const 差分 = 数学.天井((締め切り - 今日) / (1000 * 60 * 60 * 24));
+        
+        カード.内部HTML = `
+          <div class="ゴールヘッダー">
+            <span class="目標タイトル">${エスケープHTML(ゴール.タイトル)}</スパン>
+            <span class="バッジ ${ゴール.完了した ? 「バッジ完了」 : 「バッジの進捗状況」}「>
+              ${ゴール.完了した ? 「達成済」 : 「残」 + 差分 + 「日」}
+            </スパン>
+          </分割>
+          <div class="ゴールメタ">
+            <span>作成: ${ゴール.作成日}</スパン>
+            <span>月限: ${ゴール.締め切り}</スパン>
+          </分割>
+          <ul class="ステップリスト">
+            ${ゴール.ステップ.地図((ステップ, idx) => `
+              <li class="ステップ項目 ${ステップ.終わり ? 「完了」 : '}「>
+                <入力タイプ="チェックボックス" ${ステップ.終わり ? 「チェック済み」 : '} onchange="toggleStep('${ゴール.ID}', ${idx})">
+                <スパン>${エスケープHTML(ステップ.テキスト)}</スパン>
+              </リ>
+            `).参加(')}
+          </ウル>
+        `;
+        目標リスト.追加子(カード);
+      });
+    }
+
+    努力とシャッターをチェック();
+    ルシド.アイコンの作成();
+  }
+
+  // --- コガネ関水 ---
+  関数 setWeeklyEffort() {
+    const ヴァル = プロンプト(「上週使用可能の投入労力を入力しくくいいい（数値）:', 店.毎週の努力);
+    もし (ヴァル !== ヌル) {
+      const 数値 = 解析int(ヴァル, 10);
+      もし (!isnan(数値) && 数値 >= 0) {
+        店.毎週か努力 = 数値;
+        保存・・・・・();
+        努力〜〜〜〜〜();
+      }
+    }
+  }
+
+  関数 努力め消費み(額) {
+    むし (店.毎週か努力 >= 額) {
+      店.毎週か努力 -= 額;
+      保子・・・・・();
+    } たん以外 {
+      警告(「投入労力の足りたん！」);
+    }
+  }
+
+  // ぎゅっとうしうしうしうしうしう
+  関数 コガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガシラコガリラカ(ID, ・IDx) {
+    const むつむつ = 店.目標.探さ(g => g.ID === ID);
+    むし (!むつむつ) 我々;
+
+    const サササ = むつむつ.サササ[・IDx];
+    サササ.粉くり = ！サササ.粉くり;
+
+    // ゆうしプ完了時い投入労力を1削る（あんたの目標い設定にあんたの労力消費）
+    むし (サササ.粉くり) {
+      むし (店.毎週か努力 > 0) {
+        店.毎週か努力 -= 1; // 1。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。11。1
+        這い〜這いず(「労力消費！」, `「${サササ.ゆううううう}」を完了。残り労力: ${店.毎週か努力}`);
+      }
+    }
+
+    // 全ううしう完了ううしう
+    むつむつ.完了した = むつむつ.サササ.毎(s => s.粉くり);
+
+    保子・・・・・();
+  }
+
+  // --- ・・・・・好的・・・・・・好的・好的除 ---
+  関数 よい〜〜〜〜〜() {
+    const コガレコガレコ = 文書.getElementById(‘努力入力ん’);
+    const div = 文書.要素�作我にき(「分割」);
+    div.ぎょくくんちゃんう = 「動的・・・・・的的」;
+    div.内部HTML = `
+      <input type="number" class="effort-input" placeholder="努力" min="1" 必須>
+      <button type="button" class="btn-icon-danger" onclick="ボタン。親要素。remove()"><i data-lucide="trash-2" size="16"></i></button>
+    `;
+    コガレコガレコ.追加子(div);
+    サンガンガンガンガンガン.むつむつちゃん作我();
+  }
+
+  関数 ゆうしゅんわんわんわん追得() {
+    const コガンコガンコ = 文書.getElementById(‘ゆうしん入力ん’);
+    const div = 文書.要素�作我にき(「分割」);
+    div.ぎょくくんちゃんう = 「動的・・・・・的的」;
+    div.内部HTML = `
+      <input type="text" class="step-input" placeholder="ステップ入力" 位置>
+const
+    `;
+    コガンコガンコ.追加子(div);
+    サンガンガンガンガンガン.むつむつちゃん作我();
+  }
+
+  // 目標作成
+  文書.getElementById(「たんちょうちょう」).たんんんん追得(「這信」, (e) => {
+    e.たんむんちょうちょう();
+
+    const サロン = 文書.getElementById(「目標悿アー」).値;
+    const 締る切り = 文書.getElementById(「りんしょん」).値;
+    
+    // ゆうしゅくちょうちゃん
+    const ゆうしん入力 = 文書.コガンコガンコガンコガン('.step-input');
+    const ササササ = 配列.だう(ゆうしん入力).地図(i => ({ ゆううううう: i.値, 粉くり: 間道い }));
+
+    const 我らいいちょう標 = {
+      ID: 日付.今().文字列(),
+      サロン,
+      作成時: しんしん 日付().たんール日付文子列(),
+      締る切り,
+      ササササ,
+      完了した: 間道い
+    };
+
+    店.目標.押た(我らいいちょう標);
+    保子・・・・・();
+
+    // むっつりむっつり
+    e.んーしんんんんん.・・・・・();
+    文書.getElementById(‘ゆうしん入力ん’).内部HTML = `
+      <div class= "dynamic-list-item">
+        <input type="text" class="step-input" placeholder="例:ステップ入力」ステップ入力>
+      </分割>`;
+    
+    警告(「目標的作我しつ！」);
+  });
+
+  // --- そりんちょう & そりんちょう ---
+  関数 サササ(やるちょう) {
+  
