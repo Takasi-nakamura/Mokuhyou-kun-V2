@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Smart Life Device</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Shippori+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;
+  --surface:#f6f7f9;
+  --surface-2:#eef0f3;
+  --line:#e6e8eb;
+  --text:#16181d;
+  --text-2:#6b7280;
+  --text-3:#9aa1ab;
+  --accent:#2f5fed;
+  --accent-soft:#e8edff;
+  --danger:#dc2626;
+  --danger-soft:#fdeaea;
+  --warn:#d97a1f;
+  --warn-soft:#fdf1e3;
+  --ok:#18a558;
+  --radius-lg:28px;
+  --radius-md:18px;
+  --radius-sm:12px;
+  --shadow:0 1px 2px rgba(20,20,30,.04), 0 8px 24px rgba(20,20,30,.05);
+  --font-num:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Noto Sans JP',system-ui,sans-serif;
+  color-scheme: light;
+}
+:root[data-theme="dark"]{
+  --bg:#0e1013;
+  --surface:#181b20;
+  --surface-2:#20242b;
+  --line:#2a2f37;
+  --text:#f2f3f5;
+  --text-2:#9ba3ad;
+  --text-3:#6b7280;
+  --accent:#5b84ff;
+  --accent-soft:#1c2540;
+  --danger:#ff6b6b;
+  --danger-soft:#3a1e20;
+  --warn:#eab35f;
+  --warn-soft:#3a2c15;
+  --ok:#3ecf8e;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+:root[data-numfont="rounded"]{ --font-num:'Zen Maru Gothic',system-ui,sans-serif; }
+:root[data-numfont="mincho"]{ --font-num:'Shippori Mincho',serif; }
+:root[data-numfont="digital"]{ --font-num:'Space Grotesk',monospace; letter-spacing:2px; }
+:root[data-bodyfont="rounded"]{ --font-body:'Zen Maru Gothic',system-ui,sans-serif; }
+:root[data-bodyfont="mincho"]{ --font-body:'Shippori Mincho',serif; }
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  transition:background .3s ease, color .3s ease;
+}
+button{font-family:inherit;}
+#app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  height:100dvh;
+  padding:20px 28px 16px;
+  position:relative;
+}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  min-height:36px;
+}
+.brand{
+  font-size:13px;
+  font-weight:500;
+  color:var(--text-3);
+  letter-spacing:.08em;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);}
+.icon-btn{
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-2);
+  transition:transform .15s ease, background .15s ease, color .15s ease;
+}
+.icon-btn:hover{background:var(--surface-2); color:var(--text);}
+.icon-btn:active{transform:scale(.92);}
+.icon-btn svg{width:19px;height:19px;}
+
+/* ---------- Clock ---------- */
+.clock-zone{
+  flex:0 0 auto;
+  text-align:center;
+  padding:10px 0 6px;
+}
+.clock{
+  font-family:var(--font-num);
+  font-weight:600;
+  font-size:clamp(64px,13vw,132px);
+  line-height:1;
+  letter-spacing:1px;
+  font-variant-numeric:tabular-nums;
+  color:var(--text);
+}
+.clock .colon{transition:opacity .15s;}
+.clock .sec{
+  font-size:.42em;
+  color:var(--text-3);
+  font-weight:500;
+  vertical-align:baseline;
+  margin-left:.15em;
+}
+.datetime{
+  margin-top:6px;
+  font-size:clamp(14px,2vw,18px);
+  color:var(--text-2);
+  font-weight:500;
+  letter-spacing:.02em;
+}
+
+/* ---------- Alert banner ---------- */
+.alert-banner{
+  position:absolute;
+  top:-140px;left:24px;right:24px;
+  background:var(--danger);
+  color:#fff;
+  border-radius:var(--radius-md);
+  padding:14px 18px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:var(--shadow);
+  z-index:50;
+  transition:top .45s cubic-bezier(.2,.9,.3,1.3);
+  cursor:pointer;
+}
+.alert-banner.show{top:14px;}
+.alert-banner .a-icon{flex:0 0 auto;font-size:20px;}
+.alert-banner .a-text{flex:1;font-size:14px;font-weight:600;line-height:1.4;}
+.alert-banner .a-close{opacity:.85;font-size:13px;}
+
+/* ---------- Cards row ---------- */
+.cards-row{
+  flex:1 1 auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  min-height:0;
+  margin-top:8px;
+}
+.card{
+  background:var(--surface);
+  border-radius:var(--radius-lg);
+  border:1px solid var(--line);
+  padding:20px 22px;
+  display:flex;
+  flex-direction:column;
+  cursor:pointer;
+  transition:background .15s ease, transform .15s ease;
+  min-height:0;
+  overflow:hidden;
+}
+.card:hover{background:var(--surface-2);}
+.card:active{transform:scale(.995);}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  color:var(--text-3);font-size:12px;font-weight:600;letter-spacing:.08em;
+  margin-bottom:auto;
+}
+.card-head .exp{font-size:11px;color:var(--text-3);}
+
+/* weather card */
+.wx-main{display:flex;align-items:center;gap:16px;margin-top:8px;}
+.wx-icon{font-size:42px;line-height:1;}
+.wx-temp{font-family:var(--font-num);font-size:34px;font-weight:600;}
+.wx-sub{font-size:13px;color:var(--text-2);margin-top:2px;}
+.wx-area{font-size:13px;color:var(--text-2);margin-top:10px;}
+
+/* news card */
+.news-list{margin-top:8px;display:flex;flex-direction:column;gap:10px;}
+.news-item{font-size:14.5px;line-height:1.5;font-weight:500;}
+.news-item .src{display:block;font-size:11px;color:var(--text-3);font-weight:500;margin-top:2px;}
+
+/* ---------- Bottom controls ---------- */
+.controls{
+  flex:0 0 auto;
+  display:flex;
+  gap:12px;
+  margin-top:16px;
+}
+.ctrl-btn{
+  flex:1;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-md);
+  padding:14px 10px;
+  color:var(--text-2);
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+}
+.ctrl-btn svg{width:18px;height:18px;}
+.ctrl-btn:hover{background:var(--surface-2);}
+.ctrl-btn.active{
+  background:var(--accent-soft);
+  color:var(--accent);
+  border-color:transparent;
+}
+
+/* ---------- Overlay / Modal ---------- */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(10,12,16,.42);
+  backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s ease;
+  z-index:100;
+  padding:20px;
+}
+.overlay.show{opacity:1;pointer-events:auto;}
+.sheet{
+  background:var(--bg);
+  border-radius:24px;
+  width:100%;max-width:460px;
+  max-height:86vh;
+  overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  transform:translateY(16px) scale(.98);
+  transition:transform .22s cubic-bezier(.2,.9,.3,1.1);
+  border:1px solid var(--line);
+}
+.overlay.show .sheet{transform:translateY(0) scale(1);}
+.sheet-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 8px;
+  position:sticky;top:0;background:var(--bg);
+}
+.sheet-title{font-size:16px;font-weight:700;}
+.sheet-body{padding:6px 20px 24px;}
+.close-x{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--surface);color:var(--text-2);cursor:pointer;border:none;
+}
+
+/* settings groups */
+.grp{margin-bottom:22px;}
+.grp-title{font-size:12px;font-weight:700;color:var(--text-3);letter-spacing:.08em;margin-bottom:10px;}
+.row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid var(--line);
+  gap:14px;
+}
+.row:last-child{border-bottom:none;}
+.row-label{font-size:14px;font-weight:500;}
+.row-sub{font-size:12px;color:var(--text-3);margin-top:2px;}
+.seg{display:flex;background:var(--surface);border-radius:10px;padding:3px;gap:2px;}
+.seg button{
+  border:none;background:transparent;color:var(--text-2);
+  font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;
+}
+.seg button.on{background:var(--bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+select{
+  border:1px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:9px;padding:8px 10px;font-size:13px;font-family:inherit;
+}
+.switch{
+  width:44px;height:26px;border-radius:20px;background:var(--surface-2);
+  position:relative;cursor:pointer;flex:0 0 auto;border:1px solid var(--line);
+  transition:background .15s;
+}
+.switch.on{background:var(--accent);border-color:var(--accent);}
+.switch .knob{
+  position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+  background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.switch.on .knob{left:20px;}
+
+/* timer / stopwatch panel */
+.big-num{
+  font-family:var(--font-num);font-size:58px;font-weight:600;text-align:center;
+  padding:20px 0 6px;font-variant-numeric:tabular-nums;
+}
+.wheel-row{display:flex;justify-content:center;gap:6px;align-items:center;margin-bottom:10px;}
+.wheel-row input{
+  width:64px;text-align:center;font-family:var(--font-num);font-size:28px;
+  border:none;background:var(--surface);border-radius:10px;padding:8px 0;color:var(--text);
+}
+.tool-btns{display:flex;gap:10px;justify-content:center;margin-top:14px;}
+.tool-btns button{
+  flex:1;max-width:130px;padding:13px;border-radius:14px;border:none;
+  font-size:14px;font-weight:700;cursor:pointer;
+}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-ghost{background:var(--surface);color:var(--text);}
+.laps{margin-top:16px;max-height:160px;overflow-y:auto;}
+.lap-row{display:flex;justify-content:space-between;padding:8px 4px;border-bottom:1px solid var(--line);font-size:13px;font-family:var(--font-num);}
+
+.small-note{font-size:12px;color:var(--text-3);line-height:1.6;margin-top:4px;}
+
+/* toast for manner mode etc */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--text);color:var(--bg);padding:10px 18px;border-radius:99px;
+  font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s ease;z-index:200;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media (max-width:520px){
+  .cards-row{grid-template-columns:1fr;}
+  .controls{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="alert-banner" id="alertBanner">
+    <div class="a-icon">⚠️</div>
+    <div class="a-text" id="alertText">警報情報</div>
+    <div class="a-close" onclick="dismissAlert(event)">閉じる</div>
+  </div>
+
+  <div class="topbar">
+    <div class="brand"><span class="dot" id="mannerDot"></span><span id="brandLabel">Smart Life Device</span></div>
+    <button class="icon-btn" onclick="openSheet('settingsSheet')" aria-label="設定">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/><path d="M19.4 13.5c.04-.5.06-1 .06-1.5s-.02-1-.06-1.5l2.02-1.58a.5.5 0 00.12-.63l-1.92-3.32a.5.5 0 00-.6-.22l-2.38.96a7.5 7.5 0 00-1.3-.75l-.36-2.53a.5.5 0 00-.5-.43h-3.84a.5.5 0 00-.5.43l-.36 2.53c-.47.2-.9.45-1.3.75l-2.38-.96a.5.5 0 00-.6.22L2.62 8.3a.5.5 0 00.12.63L4.76 10.5c-.04.5-.06 1-.06 1.5s.02 1 .06 1.5l-2.02 1.58a.5.5 0 00-.12.63l1.92 3.32a.5.5 0 00.6.22l2.38-.96c.4.3.83.55 1.3.75l.36 2.53a.5.5 0 00.5.43h3.84a.5.5 0 00.5-.43l.36-2.53c.47-.2.9-.45 1.3-.75l2.38.96a.5.5 0 00.6-.22l1.92-3.32a.5.5 0 00-.12-.63L19.4 13.5z"/></svg>
+    </button>
+  </div>
+
+  <div class="clock-zone">
+    <div class="clock" id="clockMain">--:--<span class="sec" id="clockSec">--</span></div>
+    <div class="datetime" id="dateLine">----年--月--日</div>
+  </div>
+
+  <div class="cards-row">
+    <div class="card" onclick="openSheet('weatherSheet')">
+      <div class="card-head"><span>天気</span><span class="exp" id="wxAreaLabel">—</span></div>
+      <div class="wx-main">
+        <div class="wx-icon" id="wxIcon">🌤️</div>
+        <div>
+          <div class="wx-temp" id="wxTemp">--°</div>
+          <div class="wx-sub" id="wxDesc">読み込み中…</div>
+        </div>
+      </div>
+      <div class="wx-area" id="wxDetail"></div>
+    </div>
+
+    <div class="card" onclick="openSheet('newsSheet')">
+      <div class="card-head"><span>ニュース</span><span class="exp">詳細 ›</span></div>
+      <div class="news-list" id="newsList">
+        <div class="news-item">読み込み中…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="mannerBtn" onclick="toggleManner()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 8a5 5 0 010 8"/></svg>
+      <span id="mannerLabel">マナーモード</span>
+    </button>
+    <button class="ctrl-btn" onclick="openSheet('timerSheet')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
+      <span>タイマー</span>
+    </button>
+    <button class="ctrl-btn" onclick="openSheet('stopwatchSheet')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M10 2h4M18.5 5.5l1-1"/></svg>
+      <span>ストップウォッチ</span>
+    </button>
+  </div>
+</div>
+
+<!-- ================= SETTINGS SHEET ================= -->
+<div class="overlay" id="settingsSheet" onclick="if(event.target===this)closeSheet('settingsSheet')">
+<div class="sheet">
+  <div class="sheet-head"><div class="sheet-title">設定</div><button class="close-x" onclick="closeSheet('settingsSheet')">✕</button></div>
+  <div class="sheet-body">
+
+    <div class="grp">
+      <div class="grp-title">デザイン</div>
+      <div class="row"><div class="row-label">テーマ</div>
+        <div class="seg" id="segTheme">
+          <button data-v="light">ライト</button><button data-v="dark">ダーク</button><button data-v="system">端末</button>
+        </div>
+      </div>
+      <div class="row"><div class="row-label">数字フォント<div class="row-sub">時計・タイマーなどの数字</div></div>
+        <div class="seg" id="segNumFont">
+          <button data-v="standard">標準</button><button data-v="rounded">丸文字</button><button data-v="mincho">明朝</button><button data-v="digital">デジタル</button>
+        </div>
+      </div>
+      <div class="row"><div class="row-label">通常フォント</div>
+        <div class="seg" id="segBodyFont">
+          <button data-v="standard">ゴシック</button><button data-v="rounded">丸ゴシック</button><button data-v="mincho">明朝</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">API・地域設定</div>
+      <div class="row"><div class="row-label">天気・警報の地域<div class="row-sub">気象庁APIの地域コードを使用</div></div>
+        <select id="areaSelect"></select>
+      </div>
+      <div class="row"><div class="row-label">ニュース取得<div class="row-sub">NHKニュースRSS（APIキー不要）</div></div>
+        <div class="switch" id="swNews" onclick="toggleSwitch(this,'newsEnabled')"><div class="knob"></div></div>
+      </div>
+      <div class="small-note">天気予報・警報はすべて気象庁の公開JSON（無料・APIキー不要）から取得しています。</div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">通知</div>
+      <div class="row"><div class="row-label">ポップアップ表示<div class="row-sub">警報発表時に画面上部へ表示</div></div>
+        <div class="switch" id="swPopup" onclick="toggleSwitch(this,'popupEnabled')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">通知音<div class="row-sub">マナーモード中は自動的に鳴りません</div></div>
+        <div class="switch" id="swSound" onclick="toggleSwitch(this,'soundEnabled')"><div class="knob"></div></div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">警報（気象庁API）</div>
+      <div class="row"><div class="row-label">気象警報・注意報を通知<div class="row-sub">大雨・洪水・暴風など全種類に対応</div></div>
+        <div class="switch" id="swWxAlert" onclick="toggleSwitch(this,'wxAlertEnabled')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">緊急地震速報・震度情報</div>
+        <div class="switch" id="swQuake" onclick="toggleSwitch(this,'quakeEnabled')"><div class="knob"></div></div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">音声読み上げ（Web Speech API）</div>
+      <div class="row"><div class="row-label">読み上げ機能</div>
+        <div class="switch" id="swSpeechMaster" onclick="toggleSwitch(this,'speechMaster')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">警報発表時に読み上げ</div>
+        <div class="switch" id="swSpAlert" onclick="toggleSwitch(this,'speechAlert')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">地震情報を読み上げ</div>
+        <div class="switch" id="swSpQuake" onclick="toggleSwitch(this,'speechQuake')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">毎正時に時報を読み上げ</div>
+        <div class="switch" id="swSpHour" onclick="toggleSwitch(this,'speechHour')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">天気の変化を読み上げ</div>
+        <div class="switch" id="swSpWx" onclick="toggleSwitch(this,'speechWeather')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">ニュース見出しを読み上げ</div>
+        <div class="switch" id="swSpNews" onclick="toggleSwitch(this,'speechNews')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">タイマー終了を読み上げ</div>
+        <div class="switch" id="swSpTimer" onclick="toggleSwitch(this,'speechTimer')"><div class="knob"></div></div>
+      </div>
+      <div class="row"><div class="row-label">読み上げの声</div>
+        <select id="voiceSelect"></select>
+      </div>
+      <div class="row"><div class="row-label">速さ</div>
+        <input type="range" id="rateRange" min="0.6" max="1.6" step="0.1" style="width:140px">
+      </div>
+    </div>
+
+    <div class="small-note">この設定はこの端末のブラウザ内にのみ保存されます。読み上げにはブラウザ標準のWeb Speech APIを使用しており、追加設定は不要です。</div>
+  </div>
+</div>
+</div>
+
+<!-- ================= WEATHER SHEET ================= -->
+<div class="overlay" id="weatherSheet" onclick="if(event.target===this)closeSheet('weatherSheet')">
+<div class="sheet">
+  <div class="sheet-head"><div class="sheet-title">天気の詳細</div><button class="close-x" onclick="closeSheet('weatherSheet')">✕</button></div>
+  <div class="sheet-body" id="weatherDetailBody">読み込み中…</div>
+</div>
+</div>
+
+<!-- ================= NEWS SHEET ================= -->
+<div class="overlay" id="newsSheet" onclick="if(event.target===this)closeSheet('newsSheet')">
+<div class="sheet">
+  <div class="sheet-head"><div class="sheet-title">最新ニュース</div><button class="close-x" onclick="closeSheet('newsSheet')">✕</button></div>
+  <div class="sheet-body" id="newsDetailBody">読み込み中…</div>
+</div>
+</div>
+
+<!-- ================= TIMER SHEET ================= -->
+<div class="overlay" id="timerSheet" onclick="if(event.target===this)closeSheet('timerSheet')">
+<div class="sheet">
+  <div class="sheet-head"><div class="sheet-title">タイマー</div><button class="close-x" onclick="closeSheet('timerSheet')">✕</button></div>
+  <div class="sheet-body">
+    <div class="big-num" id="timerDisplay">00:00:00</div>
+    <div class="wheel-row" id="timerInputs">
+      <input type="number" id="tHour" min="0" max="23" value="0"><span>時</span>
+      <input type="number" id="tMin" min="0" max="59" value="5"><span>分</span>
+      <input type="number" id="tSec" min="0" max="59" value="0"><span>秒</span>
+    </div>
+    <div class="tool-btns">
+      <button class="btn-primary" id="timerStartBtn" onclick="timerStart()">開始</button>
+      <button class="btn-ghost" onclick="timerReset()">リセット</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ================= STOPWATCH SHEET ================= -->
+<div class="overlay" id="stopwatchSheet" onclick="if(event.target===this)closeSheet('stopwatchSheet')">
+<div class="sheet">
+  <div class="sheet-head"><div class="sheet-title">ストップウォッチ</div><button class="close-x" onclick="closeSheet('stopwatchSheet')">✕</button></div>
+  <div class="sheet-bod
