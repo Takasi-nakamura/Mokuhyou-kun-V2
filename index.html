@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>目標くん 2.0</title>
+  <!-- Google Fonts: サイバーパンク風フォント Orbitron -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --success: #10b981;
+      --cyber-color: #00f0ff;
+      --cyber-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans JP', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--card-bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      padding-bottom: 70px;
+    }
+
+    /* シャッターアニメーション構造 */
+    .shutter-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 60px);
+      z-index: 999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .shutter-door {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 4px solid var(--cyber-color);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      transform: translateY(-100%);
+      transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .shutter-overlay.closed {
+      pointer-events: auto;
+    }
+
+    .shutter-overlay.closed .shutter-door {
+      transform: translateY(0);
+    }
+
+    .shutter-message {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--cyber-color);
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(0,240,255,0.5);
+    }
+
+    /* Header */
+    header {
+      padding: 20px 20px 10px 20px;
+      background-color: var(--card-bg);
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 0 20px 20px 20px;
+      overflow-y: auto;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* サイバーパンク風 労力表示カード */
+    .energy-card {
+      background-color: var(--cyber-bg);
+      border-radius: 16px;
+      padding: 20px;
+      color: #fff;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .energy-title {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .energy-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: var(--cyber-color);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+      line-height: 1.1;
+    }
+
+    .energy-controls {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-small {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-small:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* 通知バナー */
+    .notification-banner {
+      background-color: #fffbeeb;
+      border: 1px solid #fef08a;
+      color: #854d0e;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* フィルタータブ */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .filter-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px 0;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-sub);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: #fff;
+      color: var(--text-main);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* 目標カード */
+    .goal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .goal-title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .goal-meta {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .goal-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .steps-list {
+      list-style: none;
+      margin-bottom: 12px;
+      background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .step-item {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+    }
+
+    .goal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-action {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-complete {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-complete:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    /* フォームスタイル */
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+
+    .dynamic-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .dynamic-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* ボトムタブナビゲーション */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      height: 60px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-sub);
+      text-decoration: none;
+      font-size: 0.65rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      width: 50%;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- シャッターアニメーション -->
+  <div id="shutter" class="shutter-overlay">
+    <div class="shutter-door">
+      <div class="shutter-message">ENERGY DEPLETED</div>
+      <p style="font-size: 0.85rem; color: #94a3b8;">今週の投入労力を使い切りました。<br>明日（午前0時）までロックされます。</p>
+    </div>
+  </div>
+
+  <header>
+    <h1>目標くん 2.0</h1>
+  </header>
+
+  <main>
+    <!-- ホームタブ -->
+    <div id="tab-home" class="tab-content active">
+      <!-- 労力表示 -->
+      <div class="energy-card">
+        <div class="energy-title">今週の使用可能な投入労力</div>
+        <div id="energy-display" class="energy-value">0</div>
+        <div class="energy-controls">
+          <button class="btn-small" onclick="openEnergyModal()"><i data-lucide="settings"></i> 毎週の労力を設定</button>
+        </div>
+      </div>
+
+      <!-- リマインド・通知 -->
+      <div id="notification-area"></div>
+
+      <!-- フィルター -->
+      <div class="filter-tabs">
+        <button class="filter-btn active" onclick="setFilter('active')">実行中</button>
+        <button class="filter-btn" onclick="setFilter('completed')">実行済み</button>
+        <button class="filter-btn" onclick="setFilter('all')">すべて</button>
+      </div>
+
+      <!-- 目標作成ボタン -->
+      <button class="btn-primary" style="margin-bottom: 15px;" onclick="toggleGoalForm()"><i data-lucide="plus"></i> 新しい目標を作成</button>
+
+      <!-- 作成フォーム modal-like -->
+      <div id="goal-form-container" style="display: none; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 15px;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 12px;">新規目標の作成</h3>
+        <div class="form-group">
+          <label class="form-label">目標の名前</label>
+          <input type="text" id="goal-name" class="form-input" placeholder="例: 読書を1冊完成させる">
+        </div>
+        <div class="form-group">
+          <label class="form-label">作成日（自動）</label>
+          <input type="text" id="goal-created-at" class="form-input" readonly style="background: #f1f5f9;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">期限（期間）</label>
+          <input type="date" id="goal-deadline" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">必要労力（数値）</label>
+          <input type="number" id="goal-cost" class="form-input" value="10" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ステップ</label>
+          <div id="steps-container" class="dynamic-list">
+            <div class="dynamic-row">
+              <input type="text" class="form-input step-input" placeholder="ステップ 1">
+              <button class="btn-icon" onclick="removeRow(this)"><i data-lucide="trash-2"></i></button>
+            </div>
+          </div>
+          <button class="btn-small" style="color: var(--text-main); border-color: var(--border); margin-top: 8px;" onclick="addStepRow()">+ ステップを追加</button>
+        </div>
+        <button class="btn-primary" onclick="saveGoal()">保存して開始</button>
+      </div>
+
+      <!-- 目標一覧 -->
+      <div id="goals-list"></div>
+    </div>
+
+    <!-- データ管理タブ -->
+    <div id="tab-data" class="tab-content">
+      <h2 style="font-size: 1rem; margin-bottom: 15px;">データ管理</h2>
+      <div class="form-group">
+        <label class="form-label">バックアップと復元</label>
+        <button class="btn-primary" style="background: #475569;" onclick="exportData()"><i data-lucide="download"></i> データをエクスポート (JSON)</button>
+        <input type="file" id="import-file" style="display: none;" onchange="importData(event)">
+        <button class="btn-primary" style="background: #475569; margin-top: 8px;" onclick="document.getElementById('import-file').click()"><i data-lucide="upload"></i> データをインポート</button>
+      </div>
+      <div style="margin-top: 30px;">
+        <button class="btn-primary" style="background: var(--danger);" onclick="clearAllData()">全データを初期化</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ナビゲーション -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('home')">
+      <i data-lucide="home"></i>
+      <span>ホーム</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('data')">
+      <i data-lucide="database"></i>
+      <span>データ管理</span>
+    </button>
+  </nav>
+</div>
+
+<!-- 労力設定 modal -->
+<div id="energy-modal" class="modal">
+  <div class="modal-content">
+    <h3 style="margin-bottom: 12px; font-size: 1rem;">週の投入労力を設定</h3>
+    <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 12px;">今週使用する合計労力を決めてください。</p>
+    <input type="number" id="modal-energy-input" class="form-input" value="100">
+    <button class="btn-primary" onclick="saveEnergySetting()">設定を保存</button>
+  </div>
+</div>
+
+<script>
+  // 初期データ構造
+  let store = {
+    weeklyEnergy: 100,
+    currentEnergy: 100,
+    lastResetDate: new Date().toDateString(),
+    goals: []
+  };
+
+  let currentFilter = 'active';
+
+  // アプリ起動
+  window.onload = () => {
+    loadStore();
+    checkDailyReset();
+    render();
+    lucide.createIcons();
+    triggerAppLaunchShutter();
+  };
+
+  function loadStore() {
+    const data = localStorage.getItem('mokuhyou_kun_db');
+    if (data) {
+      store = JSON.parse(data);
+    }
+  }
+
+  function saveStore() {
+    localStorage.setItem('mokuhyou_kun_db', JSON.stringify(store));
+  }
+
+  // 日付チェック（1日ごとにフル回復リセット）
+  function checkDailyReset() {
+    const today = new Date().toDateString();
+    if (store.lastResetDate !== today) {
+      store.currentEnergy = store.weeklyEnergy;
+      store.lastResetDate = today;
+      saveStore();
+    }
+  }
+
+  // 起動時のシャッターアニメーション
+  function triggerAppLaunchShutter() {
+    const shutter = document.getElementById('shutter');
+    if (store.currentEnergy <= 0) {
+      shutter.classList.add('closed');
+    } else {
+      // 一瞬閉じて開くオープニング演出
+      shutter.classList.add('closed');
+      setTimeout(() => {
+        shutter.classList.remove('closed');
+      }, 600);
+    }
+  }
+
+  // UI更新・描画
+  function render() {
+    document.getElementById('energy-display').innerText = store.currentEnergy;
+    
+    // シャッター状態確認
+    const shutter = document.getElementById('shutter');
+    if (store.currentEnergy <= 0) {
+      shutter.classList.add('closed');
+    } else {
+      shutter.classList.remove('closed');
+    }
+
+    renderNotifications();
+    renderGoals();
+  }
+
+  // 通知（期限の接近など）
+  function renderNotifications() {
+    const area = document.getElementById('notification-area');
+    area.innerHTML = '';
+
+    const today = new Date();
+    store.goals.forEach(g => {
+      if (!g.completed && g.deadline) {
+        const devDate = new Date(g.deadline);
+        const diffDays = Math.ceil((devDate - today) / (1000 * 60 * 60 * 24));
+        if (diffDays <= 2 && diffDays >= 0) {
+          area.innerHTML += `
+            <div class="notification-banner">
+              <i data-lucide="bell"></i>
+              <span>目標「<b>${g.name}</b>」の期限が近づいています！（残り${diffDays}日）</span>
+            </div>
+          `;
+        }
+      }
+    });
+    lucide.createIcons();
+  }
+
+  // タブ切り替え
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    
+    if (tab === 'home') {
+      document.getElementById('tab-home').classList.add('active');
+      event.currentTarget.classList.add('active');
+    } else {
+      document.getElementById('tab-data').classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+  }
+
+  // フィルター切り替え
+  function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    renderGoals();
+  }
+
+  // 目標一覧描画
+  function renderGoals() {
+    const container = document.getElementById('goals-list');
+    container.innerHTML = '';
+
+    let filtered = store.goals;
+    if (currentFilter === 'active') filtered = store.goals.filter(g => !g.completed);
+    if (currentFilter === 'completed') filtered = store.goals.filter(g => g.completed);
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<p style="text-align: center; color: var(--text-sub); font-size: 0.85rem; padding: 20px;">目標はありません</p>`;
+      return;
+    }
+
+    filtered.forEach((g, index) => {
+      const stepsHtml = g.steps.map(s => `<li class="step-item"><i data-lucide="check-circle-2" style="width: 14px; height: 14px;"></i> ${s}</li>`).join('');
+      
+      const card = document.createElement('div');
+      card.className = 'goal-card';
+      card.innerHTML = `
+        <div class="goal-header">
+          <div class="goal-title">${g.name}</div>
+          <span class="goal-badge">消費労力: ${g.cost}</span>
+        </div>
+        <div class="goal-meta">
+          <span>作成: ${g.createdAt}</span>
+          <span>期限: ${g.deadline || '未設定'}</span>
+        </div>
+        ${g.steps.length > 0 ? `<ul class="steps-list">${stepsHtml}</ul>` : ''}
+        <div class="goal-actions">
+          ${!g.completed ? 
+            `<button class="btn-action btn-complete" onclick="completeGoal('${g.id}')"><i data-lucide="check"></i> 達成！</button>` : 
+            `<span style="color: var(--success); font-size: 0.85rem; font-weight: bold;">達成済み 🎉</span>`
+          }
+        </div>
+      `;
+      container.appendChild(card);
+    });
+    lucide.createIcons();
+  }
+
+  // 目標作成フォームの開閉
+  function toggleGoalForm() {
+    const form = document.getElementById('goal-form-container');
+    const isHidden = form.style.display === 'none';
+    form.style.display = isHidden ? 'block' : 'none';
+    if (isHidden) {
+      document.getElementById('goal-created-at').value = new Date().toLocaleDateString('ja-JP');
+    }
+  }
+
+  // ステップ行の追加・削除
+  function addStepRow() {
+    const container = document.getElementById('steps-container');
+    const div = document.createElement('div');
+    div.className = 'dynamic-row';
+    div.innerHTML = `
+      <input type="text" class="form-input step-input" placeholder="新しいステップ">
+      <button class="btn-icon" onclick="removeRow(this)"><i data-lucide="trash-2"></i></button>
+    `;
+    container.appendChild(div);
+    lucide.createIcons();
+  }
+
+  function removeRow(btn) {
+    btn.parentElement.remove();
+  }
+
+  // 目標保存
+  function saveGoal() {
+    const name = document.getElementById('goal-name').value;
+    const deadline = document.getElementById('goal-deadline').value;
+    const cost = parseInt(document.getElementById('goal-cost').value) || 0;
+    
+    if (!name) {
+      alert('目標の名前を入力してください');
+      return;
+    }
+
+    const stepInputs = document.querySelectorAll('.step-input');
+    const steps = [];
+    stepInputs.forEach(input => {
+      if (input.value.trim() !== '') steps.push(input.value.trim());
+    });
+
+    const newGoal = {
+      id: Date.now().toString(),
+      name,
+      createdAt: new Date().toLocaleDateString('ja-JP'),
+      deadline,
+      cost,
+      steps,
+      completed: false
+    };
+
+    store.goals.unshift(newGoal);
+    saveStore();
+    render();
+    
+    // フォームリセット
+    document.getElementById('goal-name').value = '';
+    document.getElementById('steps-container').innerHTML = `
+      <div class="dynamic-row">
+        <input type="text" class="form-input step-input" placeholder="ステップ 1">
+        <button class="btn-icon" onclick="removeRow(this)"><i data-lucide="trash-2"></i></button>
+      </div>
+    `;
+    toggleGoalForm();
+  }
+
+  // 目標達成処理（労力が減少＆シャッター判定）
+  function completeGoal(id) {
+    const goal = store.goals.find(g => g.id === id);
+    if (!goal || goal.completed) return;
+
+    if (store.currentEnergy < goal.cost) {
+      alert('残り労力が足りません！設定を見直すか回復を待ってください。');
+      return;
+    }
+
+    goal.completed = true;
+    store.currentEnergy -= goal.cost;
+    saveStore();
+    render();
+  }
+
+  // モーダル関連
+  function openEnergyModal() {
+    document.getElementById('modal-energy-input').value = store.weeklyEnergy;
+    document.getElementById('energy-modal').style.display = 'flex';
+  }
+
+  function saveEnergySetting() {
+    const val = parseInt(document.getElementById('modal-energy-input').value);
+    if (val > 0) {
+      store.weeklyEnergy = val;
+      store.currentEnergy = val; // 再設定で回復
+      saveStore();
+      render();
+      document.getElementById('energy-modal').style.display = 'none';
+    }
+  }
+
+  // データ管理（バックアップ＆復元）
+  function exportData() {
+    const blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mokuhyou_kun_backup_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+  }
+
+  function importData(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        store = JSON.parse(evt.target.result);
+        saveStore();
+        render();
+        alert('データを正常に読み込みました！');
+      } catch (err) {
+        alert('ファイルの読み込みに失敗しました。');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function clearAllData() {
+    if (confirm('本当にすべてのデータを削除しますか？')) {
+      localStorage.removeItem('mokuhyou_kun_db');
+      location.reload();
+    }
+  }
+</script>
+</body>
+</html>
